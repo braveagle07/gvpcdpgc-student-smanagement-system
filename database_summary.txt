@@ -1,0 +1,74 @@
+
+COLLEGE ERP SYSTEM - DATABASE DOCUMENTATION SUMMARY
+Generated on: October 12, 2025 at 08:14 PM
+
+DATABASE OVERVIEW:
+==================
+- Database Type: SQLite3
+- Total Tables: 28
+- Application Tables: 12
+- Django System Tables: 16
+
+APPLICATION TABLES (info_*):
+============================
+1. info_user - Main user accounts (students, teachers, admins)
+2. info_dept - Academic departments
+3. info_course - Individual courses/subjects
+4. info_class - Class sections with semester info
+5. info_student - Student personal information
+6. info_teacher - Teacher personal information
+7. info_assign - Teaching assignments (teacher + course + class)
+8. info_assigntime - Timetable entries (when/where classes happen)
+9. info_attendanceclass - Attendance session records
+10. info_attendance - Individual student attendance
+11. info_attendancetotal - Aggregated attendance statistics
+12. info_attendancerange - Date range configuration
+13. info_studentcourse - Student enrollment records
+14. info_marks - Individual marks/grades
+15. info_marksclass - Mark category definitions
+16. info_assignment - Teacher-created assignments
+17. info_assignmentsubmission - Student assignment submissions
+18. info_studymaterial - Educational resources
+
+DJANGO SYSTEM TABLES:
+=====================
+- django_migrations - Schema change history
+- django_content_type - Model content types
+- django_admin_log - Admin action logs
+- django_session - User session data
+- auth_permission - System permissions
+- auth_group - User groups
+- auth_group_permissions - Group-permission relationships
+- info_user_groups - User-group relationships
+- info_user_user_permissions - User-permission relationships
+- authtoken_token - API authentication tokens
+- sqlite_sequence - Auto-increment sequence tracking
+
+KEY RELATIONSHIPS:
+==================
+- User → Student/Teacher (one-to-one)
+- Dept → Course/Class (one-to-many)
+- Teacher + Course + Class → Assign (many-to-many)
+- Assign → AssignTime (one-to-many)
+- Student + Course → StudentCourse (many-to-many)
+- StudentCourse → Marks (one-to-many)
+- Assign → AttendanceClass (one-to-many)
+- Student + AttendanceClass → Attendance (many-to-many)
+- Teacher + Course + Class → Assignment (one-to-many)
+- Student + Assignment → AssignmentSubmission (many-to-many)
+
+FEATURES:
+=========
+✓ User Authentication & Authorization
+✓ Student & Teacher Management
+✓ Course & Class Management
+✓ Timetable Management
+✓ Attendance Tracking
+✓ Marks & Grade Management
+✓ Assignment System
+✓ Study Material Management
+✓ Admin Panel Integration
+✓ REST API Support
+
+For detailed field information, constraints, and sample data,
+please refer to the HTML documentation file.

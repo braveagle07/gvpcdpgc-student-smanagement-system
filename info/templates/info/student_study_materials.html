@@ -1,0 +1,92 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Study Materials{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-book"></i> Study Materials
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if materials %}
+                        <div class="row">
+                            {% for material in materials %}
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-{{ material.material_type|lower }}"></i>
+                                            {{ material.title }}
+                                        </h5>
+                                        <small class="text-muted">{{ material.course.shortname }} - {{ material.class_id }}</small>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ material.description|truncatechars:100 }}</p>
+                                        <div class="mb-2">
+                                            <span class="badge badge-info">{{ material.get_material_type_display }}</span>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar"></i> {{ material.created_at|date:"M d, Y" }}
+                                        </small>
+                                    </div>
+                                    <div class="card-footer">
+                                        {% if material.file_upload %}
+                                            <a href="{{ material.file_upload.url }}" target="_blank" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                        {% elif material.external_link %}
+                                            <a href="{{ material.external_link }}" target="_blank" class="btn btn-info btn-sm">
+                                                <i class="fas fa-external-link-alt"></i> View Link
+                                            </a>
+                                        {% elif material.content %}
+                                            <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#contentModal{{ material.id }}">
+                                                <i class="fas fa-eye"></i> View Content
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content Modal -->
+                            {% if material.content %}
+                            <div class="modal fade" id="contentModal{{ material.id }}" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{{ material.title }}</h5>
+                                            <button type="button" class="close" data-dismiss="modal">
+                                                <span>&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ material.content|linebreaks }}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No study materials available</h5>
+                            <p class="text-muted">Your teachers haven't uploaded any study materials yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

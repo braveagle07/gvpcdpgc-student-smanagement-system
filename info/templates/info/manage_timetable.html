@@ -1,0 +1,66 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Manage Timetable - {{ class_obj }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-calendar-alt"></i> Manage Timetable - {{ class_obj }}
+                    </h3>
+                    <p class="text-muted">Assign courses to time slots for this class</p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        {% for time_slot in time_slots %}
+                                        <th>{{ time_slot.0 }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for day in days %}
+                                    <tr>
+                                        <td><strong>{{ day.0 }}</strong></td>
+                                        {% for time_slot in time_slots %}
+                                        <td>
+                                            <select name="{{ day.0 }}_{{ time_slot.0 }}" class="form-control form-control-sm">
+                                                <option value="">-- Select Course --</option>
+                                                {% for assign in assignments %}
+                                                <option value="{{ assign.id }}" 
+                                                    {% if current_timetable|lookup:day.0|lookup:time_slot.0 == assign.id %}selected{% endif %}>
+                                                    {{ assign.course.shortname }} - {{ assign.teacher.name }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save mr-2"></i>Save Timetable
+                            </button>
+                            <a href="{% url 'admin_timetable_list' %}" class="btn btn-secondary btn-lg ml-2">
+                                <i class="fas fa-arrow-left mr-2"></i>Back to Classes
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Add Study Material{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-plus"></i> Add New Study Material
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="title">Material Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Description *</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="material_type">Material Type *</label>
+                            <select class="form-control" id="material_type" name="material_type" required>
+                                <option value="">Select Type</option>
+                                <option value="PDF">PDF Document</option>
+                                <option value="DOC">Word Document</option>
+                                <option value="PPT">PowerPoint Presentation</option>
+                                <option value="VIDEO">Video File</option>
+                                <option value="AUDIO">Audio File</option>
+                                <option value="IMAGE">Image File</option>
+                                <option value="LINK">External Link</option>
+                                <option value="TEXT">Text Content</option>
+                            </select>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="class_id">Class *</label>
+                                    <select class="form-control" id="class_id" name="class_id" required>
+                                        <option value="">Select Class</option>
+                                        {% for class in classes %}
+                                        <option value="{{ class.id }}">{{ class.dept.name }} {{ class.section|upper }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="course">Course *</label>
+                                    <select class="form-control" id="course" name="course" required>
+                                        <option value="">Select Course</option>
+                                    </select>
+                                    <small class="form-text text-muted" id="course-info">Select a class first to see available courses</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- File Upload Section -->
+                        <div class="form-group" id="file-upload-section" style="display: none;">
+                            <label for="file_upload">Upload File</label>
+                            <input type="file" class="form-control-file" id="file_upload" name="file_upload">
+                            <small class="form-text text-muted">Supported formats: PDF, DOC, DOCX, PPT, PPTX, MP4, MP3, JPG, PNG</small>
+                        </div>
+                        
+                        <!-- External Link Section -->
+                        <div class="form-group" id="external-link-section" style="display: none;">
+                            <label for="external_link">External Link</label>
+                            <input type="url" class="form-control" id="external_link" name="external_link" placeholder="https://example.com">
+                        </div>
+                        
+                        <!-- Text Content Section -->
+                        <div class="form-group" id="text-content-section" style="display: none;">
+                            <label for="content">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Add Material
+                            </button>
+                            <a href="{% url 'teacher_study_materials' teacher.id %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> Material Guidelines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success"></i> Use clear and descriptive titles</li>
+                        <li><i class="fas fa-check text-success"></i> Provide helpful descriptions</li>
+                        <li><i class="fas fa-check text-success"></i> Ensure files are properly formatted</li>
+                        <li><i class="fas fa-check text-success"></i> Check external links before sharing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('material_type').addEventListener('change', function() {
+    const materialType = this.value;
+    const fileSection = document.getElementById('file-upload-section');
+    const linkSection = document.getElementById('external-link-section');
+    const contentSection = document.getElementById('text-content-section');
+    
+    // Hide all sections first
+    fileSection.style.display = 'none';
+    linkSection.style.display = 'none';
+    contentSection.style.display = 'none';
+    
+    // Show relevant section based on material type
+    if (['PDF', 'DOC', 'PPT', 'VIDEO', 'AUDIO', 'IMAGE'].includes(materialType)) {
+        fileSection.style.display = 'block';
+    } else if (materialType === 'LINK') {
+        linkSection.style.display = 'block';
+    } else if (materialType === 'TEXT') {
+        contentSection.style.display = 'block';
+    }
+});
+
+// Course data from Django context
+const courseData = {
+    {% for assignment in teacher_assignments %}
+    "{{ assignment.class_id.id }}": [
+        {% for course_assignment in teacher_assignments %}
+            {% if course_assignment.class_id.id == assignment.class_id.id %}
+            {
+                "id": "{{ course_assignment.course.id }}",
+                "name": "{{ course_assignment.course.name }}",
+                "shortname": "{{ course_assignment.course.shortname }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endif %}
+        {% endfor %}
+    ]{% if not forloop.last %},{% endif %}
+    {% endfor %}
+};
+
+document.getElementById('class_id').addEventListener('change', function() {
+    const classId = this.value;
+    const courseSelect = document.getElementById('course');
+    const courseInfo = document.getElementById('course-info');
+    
+    // Clear existing options
+    courseSelect.innerHTML = '<option value="">Select Course</option>';
+    
+    if (classId && courseData[classId]) {
+        const courses = courseData[classId];
+        if (courses.length > 0) {
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = `${course.name} (${course.shortname})`;
+                courseSelect.appendChild(option);
+            });
+            courseInfo.textContent = `${courses.length} course(s) available for this class`;
+            courseInfo.className = 'form-text text-success';
+        } else {
+            courseInfo.textContent = 'No courses available for this class';
+            courseInfo.className = 'form-text text-warning';
+        }
+    } else {
+        courseInfo.textContent = 'Select a class first to see available courses';
+        courseInfo.className = 'form-text text-muted';
+    }
+});
+</script>
+{% endblock %}
+

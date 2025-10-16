@@ -1,0 +1,343 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block css %}
+<style>
+  /* Admin Dashboard Specific Styles */
+  .dashboard-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .welcome-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    padding: 60px 0;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+  }
+
+  .welcome-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .welcome-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: slideInLeft 1s ease-out;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    animation: slideInRight 1s ease-out 0.2s both;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    padding: 0 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .admin-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .admin-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--accent-color), var(--success-color), var(--warning-color), var(--danger-color));
+  }
+
+  .admin-card:hover {
+    transform: translateY(-15px) scale(1.03);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .admin-card:hover .admin-icon {
+    transform: scale(1.2) rotate(10deg);
+  }
+
+  .admin-icon-container {
+    height: 250px;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--success-color) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .admin-icon-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .admin-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .admin-icon img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .admin-content {
+    padding: 40px;
+    text-align: center;
+  }
+
+  .admin-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .admin-title i {
+    margin-right: 15px;
+    color: var(--accent-color);
+    font-size: 1.8rem;
+  }
+
+  .admin-description {
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+  }
+
+  .admin-button {
+    width: 100%;
+    padding: 18px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--success-color) 100%);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+  }
+
+  .admin-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .admin-button:hover::before {
+    left: 100%;
+  }
+
+  .admin-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+  }
+
+  /* Staggered Animation */
+  .admin-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.1s both; }
+  .admin-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.2s both; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .welcome-title {
+      font-size: 2.5rem;
+    }
+    
+    .welcome-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .admin-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      padding: 0 10px;
+    }
+    
+    .admin-content {
+      padding: 30px 20px;
+    }
+    
+    .admin-icon-container {
+      height: 200px;
+    }
+    
+    .admin-icon {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .admin-icon img {
+      width: 60px;
+      height: 60px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <div class="container">
+      <div class="welcome-content text-center">
+        <h1 class="welcome-title">Admin Dashboard</h1>
+        <p class="welcome-subtitle">Manage System Users - Add Teachers and Students to the College ERP System</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Features Grid -->
+  <div class="container">
+    <div class="admin-grid">
+      <!-- Add Teacher Card -->
+      <a href="{% url 'add_teacher' %}" class="admin-card">
+        <div class="admin-icon-container">
+          <div class="admin-icon">
+            <img src="{% static 'info/images/teacher.png' %}" alt="Add Teacher">
+          </div>
+        </div>
+        <div class="admin-content">
+          <h3 class="admin-title">
+            <i class="fas fa-chalkboard-teacher"></i>
+            Add Teacher
+          </h3>
+          <p class="admin-description">
+            Register new faculty members to the system. Enter teacher details, assign departments, and set up their teaching credentials for course management.
+          </p>
+          <button class="admin-button">
+            <i class="fas fa-plus mr-2"></i>Add New Teacher
+          </button>
+        </div>
+      </a>
+
+      <!-- Add Student Card -->
+      <a href="{% url 'add_student' %}" class="admin-card">
+        <div class="admin-icon-container">
+          <div class="admin-icon">
+            <img src="{% static 'info/images/student.png' %}" alt="Add Student">
+          </div>
+        </div>
+        <div class="admin-content">
+          <h3 class="admin-title">
+            <i class="fas fa-user-graduate"></i>
+            Add Student
+          </h3>
+          <p class="admin-description">
+            Enroll new students into the system. Enter student information, assign classes, and set up their academic profiles for attendance and grade tracking.
+          </p>
+          <button class="admin-button">
+            <i class="fas fa-user-plus mr-2"></i>Add New Student
+          </button>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

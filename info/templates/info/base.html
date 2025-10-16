@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{% endblock %}</title>
+    {% load static %}
+
+    <!-- Bootstrap core CSS-->
+    <link href="{% static '/info/bootstrap/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom fonts for this template-->
+    <link href="{% static '/info/bootstrap/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <!-- Page level plugin CSS-->
+    <link href="{% static '/info/bootstrap/vendor/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static '/info/bootstrap/css/sb-admin.css' %}" rel="stylesheet">
+
+    {% block css %}
+    {% endblock %}
+
+    <style>
+        /* Modern Professional Theme - White/Black with 3D Effects */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+            --white: #ffffff;
+            --black: #2c3e50;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        /* 3D Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--secondary-color) 100%) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--white) !important;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+            margin-right: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 3D Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, var(--white) 0%, var(--gray-100) 100%);
+            box-shadow: 8px 0 32px rgba(0, 0, 0, 0.15);
+            border-right: 1px solid var(--gray-200);
+            position: relative;
+            z-index: 999;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-color) 0%, var(--success-color) 100%);
+        }
+
+        .nav-link {
+            color: var(--gray-700) !important;
+            padding: 16px 20px;
+            margin: 4px 12px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--success-color) 100%);
+            color: var(--white) !important;
+            transform: translateX(8px) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white) !important;
+            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .nav-link:hover .menu-icon {
+            transform: scale(1.2) rotate(10deg);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        /* 3D Cards */
+        .card {
+            background: var(--white);
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--success-color), var(--warning-color));
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--white) 100%);
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 20px 24px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* 3D Buttons */
+        .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #2980b9 100%);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #e67e22 100%);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Content Area */
+        #content-wrapper {
+            background: transparent;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            padding: 30px;
+        }
+
+        /* Tables */
+        .table {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            border: none;
+            padding: 20px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--white) 100%);
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            padding: 16px;
+            border-color: var(--gray-200);
+            vertical-align: middle;
+        }
+
+        /* Modals */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            border-radius: 16px 16px 0 0;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--success-color) 100%);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .scroll-to-top:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.4);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .scroll-to-top i {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Ensure scroll button is always visible */
+        .scroll-to-top {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 15px;
+            }
+            
+            .card {
+                margin-bottom: 20px;
+            }
+            
+            .nav-link {
+                padding: 12px 16px;
+                margin: 2px 8px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Badge Styling */
+        .badge {
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #e67e22 100%);
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #2980b9 100%);
+        }
+    </style>
+  </head>
+
+  <body id="page-top">
+
+    <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+      <a class="navbar-brand mr-1" href="{% url 'index' %}"><img src="{% static 'info/images/gvplogo.jpg' %}" alt="College Logo">GVPCDPGC</a>
+
+      <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Navbar -->
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                {% if request.user.is_student %}
+                    <a class="nav-link text-capitalize text-white font-weight-bold">{{ request.user.student.name }}</a>
+                {% elif request.user.is_teacher %}
+                    <a class="nav-link text-capitalize text-white font-weight-bold">{{ request.user.teacher.name }}</a>
+                {% endif %}
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white font-weight-bold" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </a>
+            </li>
+          </ul>
+        </div>
+
+    </nav>
+
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <ul class="sidebar navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'index' %}">
+                <span>Home</span>
+              </a>
+            </li>
+        {% if request.user.is_student %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'attendance' request.user.student.USN %}">
+                <img src="{% static 'info/images/icons_page-0001.jpg' %}" alt="Attendance" class="menu-icon">
+                <span>Attendance</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'attendance' request.user.student.USN %}">
+                <img src="{% static 'info/images/icons_page-0001.jpg' %}" alt="Attendance By Subject" class="menu-icon">
+                <span>Attendance By Subject</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'marks_list' request.user.student.USN %}">
+                <img src="{% static 'info/images/icons_page-0002.jpg' %}" alt="Marks" class="menu-icon">
+                <span>Marks</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'student_assignments' request.user.student.USN %}">
+                <img src="{% static 'info/images/icons_page-0003.jpg' %}" alt="Assignments" class="menu-icon">
+                <span>Assignments</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'student_study_materials' request.user.student.USN %}">
+                <img src="{% static 'info/images/icons_page-0004.jpg' %}" alt="Study Materials" class="menu-icon">
+                <span>Study Materials</span>
+              </a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{% url 'timetable' request.user.student.class_id_id %}">
+                <img src="{% static 'info/images/icons_page-0005.jpg' %}" alt="Time Table" class="menu-icon">
+                <span>Time Table</span>
+              </a>
+            </li>
+
+        {% elif request.user.is_teacher %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 't_clas' request.user.teacher.id 1 %}">
+                <img src="{% static 'info/images/icons_page-0001.jpg' %}" alt="Attendance" class="menu-icon">
+                <span>Attendance</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 't_clas' request.user.teacher.id 2 %}">
+                <img src="{% static 'info/images/icons_page-0002.jpg' %}" alt="Marks" class="menu-icon">
+                <span>Marks</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'teacher_assignments' request.user.teacher.id %}">
+                <img src="{% static 'info/images/icons_page-0003.jpg' %}" alt="Assignments" class="menu-icon">
+                <span>Assignments</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'teacher_study_materials' request.user.teacher.id %}">
+                <img src="{% static 'info/images/icons_page-0004.jpg' %}" alt="Study Materials" class="menu-icon">
+                <span>Study Materials</span>
+              </a>
+            </li>
+              <li class="nav-item">
+              <a class="nav-link" href="{% url 't_timetable' request.user.teacher.id %}">
+                <img src="{% static 'info/images/icons_page-0005.jpg' %}" alt="Time Table" class="menu-icon">
+                <span>Time Table</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 't_clas' request.user.teacher.id 3 %}">
+                <img src="{% static 'info/images/icons_page-0006.jpg' %}" alt="Reports" class="menu-icon">
+                <span>Reports</span>
+              </a>
+            </li>
+        {% endif %}
+      </ul>
+
+      <div id="content-wrapper">
+
+        <div class="container-fluid">
+
+          <!-- Breadcrumbs-->
+{#          <ol class="breadcrumb">#}
+{#            <li class="breadcrumb-item">#}
+{#              <a href="index.html">Dashboard</a>#}
+{#            </li>#}
+{#            <li class="breadcrumb-item active">Blank Page</li>#}
+{#          </ol>#}
+
+          <!-- Page Content -->
+            {% block content %}
+            {% endblock %}
+
+        </div>
+        <!-- /.container-fluid -->
+
+        <!-- Sticky Footer -->
+{#        <footer class="sticky-footer">#}
+{#          <div class="container my-auto">#}
+{#            <div class="copyright text-center my-auto">#}
+{#              <span>Copyright © Your Website 2018</span>#}
+{#            </div>#}
+{#          </div>#}
+{#        </footer>#}
+
+      </div>
+      <!-- /.content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top" title="Back to Top">
+      <img src="{% static 'info/images/up-arrow.png' %}" alt="Back to Top" style="width: 20px; height: 20px;">
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+              {% csrf_token %}
+              <button class="btn btn-primary" type="submit">Logout</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static '/info/bootstrap/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static '/info/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static '/info/bootstrap/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static '/info/bootstrap/js/sb-admin.min.js' %}"></script>
+
+   {% block scripts %}
+    {% endblock %}
+  </body>
+
+</html>

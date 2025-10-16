@@ -1,0 +1,384 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block css %}
+<style>
+  /* Student Dashboard Specific Styles */
+  .dashboard-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .welcome-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    padding: 60px 0;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+  }
+
+  .welcome-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .welcome-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: slideInLeft 1s ease-out;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    animation: slideInRight 1s ease-out 0.2s both;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 0 20px;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--accent-color), var(--success-color), var(--warning-color), var(--danger-color));
+  }
+
+  .feature-card:hover {
+    transform: translateY(-15px) scale(1.03);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+  }
+
+  .feature-card:hover .feature-icon {
+    transform: scale(1.2) rotate(10deg);
+  }
+
+  .feature-icon-container {
+    height: 200px;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--success-color) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-icon-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .feature-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .feature-icon img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .feature-content {
+    padding: 30px;
+  }
+
+  .feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .feature-title i {
+    margin-right: 12px;
+    color: var(--accent-color);
+  }
+
+  .feature-description {
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-size: 1rem;
+  }
+
+  .feature-button {
+    width: 100%;
+    padding: 15px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .feature-button:hover::before {
+    left: 100%;
+  }
+
+  .feature-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+  }
+
+  /* Staggered Animation */
+  .feature-card:nth-child(1) { animation: fadeInUp 0.6s ease-out 0.1s both; }
+  .feature-card:nth-child(2) { animation: fadeInUp 0.6s ease-out 0.2s both; }
+  .feature-card:nth-child(3) { animation: fadeInUp 0.6s ease-out 0.3s both; }
+  .feature-card:nth-child(4) { animation: fadeInUp 0.6s ease-out 0.4s both; }
+  .feature-card:nth-child(5) { animation: fadeInUp 0.6s ease-out 0.5s both; }
+  .feature-card:nth-child(6) { animation: fadeInUp 0.6s ease-out 0.6s both; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .welcome-title {
+      font-size: 2.5rem;
+    }
+    
+    .welcome-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .feature-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 0 10px;
+    }
+    
+    .feature-content {
+      padding: 20px;
+    }
+  }
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="dashboard-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <div class="container">
+      <div class="welcome-content text-center">
+        <h1 class="welcome-title text-capitalize">Welcome {{ request.user.student.name }}</h1>
+        <p class="welcome-subtitle">Your Academic Dashboard - Track Progress, Manage Assignments & Access Resources</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Grid -->
+  <div class="container">
+    <div class="feature-grid">
+      <!-- Attendance Card -->
+      <div class="feature-card">
+        <div class="feature-icon-container">
+          <div class="feature-icon">
+            <img src="{% static 'info/images/icons_page-0001.jpg' %}" alt="Attendance">
+          </div>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">
+            <i class="fas fa-user-check"></i>
+            Attendance
+          </h3>
+          <p class="feature-description">
+            View your attendance status for each course. Track your presence and see detailed records of all conducted classes.
+          </p>
+          <a href="{% url 'attendance' request.user.student.USN %}" class="btn btn-primary feature-button">
+            <i class="fas fa-eye mr-2"></i>View Attendance
+          </a>
+        </div>
+      </div>
+
+      <!-- Marks Card -->
+      <div class="feature-card">
+        <div class="feature-icon-container">
+          <div class="feature-icon">
+            <img src="{% static 'info/images/icons_page-0002.jpg' %}" alt="Marks">
+          </div>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">
+            <i class="fas fa-chart-line"></i>
+            Marks & Grades
+          </h3>
+          <p class="feature-description">
+            Check your academic performance with detailed marks from internal assessments, events, and semester end exams.
+          </p>
+          <a href="{% url 'marks_list' request.user.student.USN %}" class="btn btn-primary feature-button">
+            <i class="fas fa-chart-line mr-2"></i>View Marks
+          </a>
+        </div>
+      </div>
+
+      <!-- Timetable Card -->
+      <div class="feature-card">
+        <div class="feature-icon-container">
+          <div class="feature-icon">
+            <img src="{% static 'info/images/icons_page-0005.jpg' %}" alt="Timetable">
+          </div>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">
+            <i class="fas fa-calendar-alt"></i>
+            Timetable
+          </h3>
+          <p class="feature-description">
+            Access your complete class schedule. View all courses with their timings and classroom locations.
+          </p>
+          <a href="{% url 'timetable' request.user.student.class_id_id %}" class="btn btn-primary feature-button">
+            <i class="fas fa-calendar-alt mr-2"></i>View Schedule
+          </a>
+        </div>
+      </div>
+
+      <!-- Assignments Card -->
+      <div class="feature-card">
+        <div class="feature-icon-container">
+          <div class="feature-icon">
+            <img src="{% static 'info/images/icons_page-0003.jpg' %}" alt="Assignments">
+          </div>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">
+            <i class="fas fa-tasks"></i>
+            Assignments
+          </h3>
+          <p class="feature-description">
+            Submit assignments, track deadlines, and receive feedback from your teachers. Manage all your academic tasks efficiently.
+          </p>
+          <a href="{% url 'student_assignments' request.user.student.USN %}" class="btn btn-primary feature-button">
+            <i class="fas fa-tasks mr-2"></i>Manage Assignments
+          </a>
+        </div>
+      </div>
+
+      <!-- Study Materials Card -->
+      <div class="feature-card">
+        <div class="feature-icon-container">
+          <div class="feature-icon">
+            <img src="{% static 'info/images/icons_page-0004.jpg' %}" alt="Study Materials">
+          </div>
+        </div>
+        <div class="feature-content">
+          <h3 class="feature-title">
+            <i class="fas fa-book"></i>
+            Study Materials
+          </h3>
+          <p class="feature-description">
+            Access learning resources shared by your teachers. Download documents, watch videos, and explore additional materials.
+          </p>
+          <a href="{% url 'student_study_materials' request.user.student.USN %}" class="btn btn-primary feature-button">
+            <i class="fas fa-download mr-2"></i>Access Materials
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

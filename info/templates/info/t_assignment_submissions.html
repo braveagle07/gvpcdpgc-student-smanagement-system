@@ -1,0 +1,102 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Assignment Submissions{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-file-alt"></i> Submissions for: {{ assignment.title }}
+                    </h3>
+                    <div class="card-tools">
+                        <a href="{% url 'teacher_assignments' teacher.id %}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Assignments
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Course:</strong> {{ assignment.course.shortname }}<br>
+                            <strong>Class:</strong> {{ assignment.class_id }}<br>
+                            <strong>Due Date:</strong> {{ assignment.due_date|date:"M d, Y H:i" }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Max Marks:</strong> {{ assignment.max_marks }}<br>
+                            <strong>Total Submissions:</strong> {{ submissions|length }}<br>
+                            <strong>Graded:</strong> {{ submissions|length|add:"-1" }}
+                        </div>
+                    </div>
+                    
+                    {% if submissions %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>USN</th>
+                                        <th>Submitted At</th>
+                                        <th>Status</th>
+                                        <th>Marks</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for submission in submissions %}
+                                    <tr>
+                                        <td>{{ submission.student.name }}</td>
+                                        <td>{{ submission.student.USN }}</td>
+                                        <td>
+                                            {% if submission.is_submitted %}
+                                                {{ submission.submitted_at|date:"M d, Y H:i" }}
+                                            {% else %}
+                                                <span class="text-muted">Not submitted</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if submission.is_submitted %}
+                                                <span class="badge badge-success">Submitted</span>
+                                            {% else %}
+                                                <span class="badge badge-warning">Pending</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if submission.marks_obtained is not None %}
+                                                <span class="badge badge-info">{{ submission.marks_obtained }}/{{ assignment.max_marks }}</span>
+                                            {% else %}
+                                                <span class="text-muted">Not graded</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if submission.is_submitted %}
+                                                <a href="{% url 'grade_assignment' teacher.id submission.id %}" 
+                                                   class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i> Grade
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">No submission</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No submissions yet</h5>
+                            <p class="text-muted">Students haven't submitted their assignments yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
